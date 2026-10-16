@@ -44,8 +44,15 @@
     function normalizePhone(value) { return value.trim().replace(/[\s()+-]/g, ''); }
     function phoneToEmail(phone) {
       const digits = normalizePhone(phone);
-      if (!/^\d{8,15}$/.test(digits)) throw new Error('اكتب رقم تليفون صحيحًا بالأرقام فقط، من 8 إلى 15 رقمًا.');
+      if (!/^\\d{8,15}$/.test(digits)) throw new Error('اكتب رقم تليفون صحيحًا بالأرقام فقط، من 8 إلى 15 رقمًا.');
       return `${digits}@phone.yalla-city.app`;
+    }
+    function phoneLoginCandidates(phone) {
+      const digits = normalizePhone(phone);
+      const candidates = [digits];
+      if (/^01\\d{9}$/.test(digits)) candidates.push('20' + digits.slice(1));
+      if (/^201\\d{9}$/.test(digits)) candidates.push('0' + digits.slice(2));
+      return [...new Set(candidates)];
     }
     function showError(error) {
       const code = error?.code || '';
@@ -85,9 +92,18 @@
           credential = await createUserWithEmailAndPassword(auth, email, password);
           await setDoc(doc(db, 'users', credential.user.uid), { phone, gold: 5, animals: [], createdAt: serverTimestamp() });
         } else {
-          credential = await signInWithEmailAndPassword(auth, email, password);
-          // finishLogin repairs a missing Firestore profile for this same Auth account.
-          // Do not reject valid credentials merely because the profile document is missing.
+          let lastError;
+          credential = null;
+          for (const candidate of phoneLoginCandidates(phone)) {
+            try {
+              credential = await signInWithEmailAndPassword(auth, phoneToEmail(candidate), password);
+              break;
+            } catch (error) {
+              lastError = error;
+              if (error?.code !== 'auth/invalid-credential' && error?.code !== 'auth/user-not-found') throw error;
+            }
+          }
+          if (!credential) throw lastError || new Error('لم يتم العثور على الحساب بهذا الرقم وكلمة المرور.');
         }
         await finishLogin(credential.user, phone);
       } catch (error) { showError(error); }
