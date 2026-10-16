@@ -65,6 +65,36 @@ WA.onInit().then(async () => {
     ]);
   };
 
+  const openRules = () => {
+    WA.ui.openPopup("yalla-rules-menu", "📜 قوانين Yalla City\\n\\n1. احترم جميع اللاعبين.\\n2. ممنوع الإزعاج أو الإساءة.\\n3. لا تشارك بيانات حسابك أو كلمة المرور.\\n4. لا تستخدم الثغرات أو تحاول تعطيل اللعبة.\\n5. تعامل باحترام مع الجميع.", [
+      { label: "إغلاق", className: "primary", callback: (popup) => popup.close() },
+    ]);
+  };
+
+  const openHelp = () => {
+    WA.ui.openPopup("yalla-help-menu", "🎮 شرح اللعبه\\n\\n• استخدم أزرار الحركة على الهاتف أو لوحة المفاتيح على الكمبيوتر للتحرك.\\n• اقترب من الأبواب واتبع منطقة الانتقال للدخول إلى الخريطة الأخرى.\\n• استخدم الدردشة للتواصل مع اللاعبين.\\n• سجّل الدخول لمتابعة رصيد الكوينز.\\n• اقترب من منطقة المتجر لشراء الحيوانات بالكوينز.", [
+      { label: "إغلاق", className: "primary", callback: (popup) => popup.close() },
+    ]);
+  };
+
+  // Add clearly labeled help buttons to the WorkAdventure action bar.
+  // These are extra player-facing shortcuts; the platform's native moderation menu
+  // is owned by WorkAdventure and cannot be replaced from a map script.
+  try {
+    WA.ui.actionBar.addButton({
+      id: "yalla-game-rules",
+      label: "📜 قوانين اللعبة",
+      callback: openRules,
+    });
+    WA.ui.actionBar.addButton({
+      id: "yalla-game-help",
+      label: "🎮 شرح اللعبة",
+      callback: openHelp,
+    });
+  } catch (error) {
+    console.warn("Could not add Yalla City help buttons to action bar:", error);
+  }
+
   const updateGoldBanner = (gold: number) => {
     currentCoins = gold;
     WA.ui.banner.openBanner({
