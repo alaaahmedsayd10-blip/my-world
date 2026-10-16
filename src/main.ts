@@ -22,7 +22,7 @@ const ANIMALS = [
 
 type AnimalId = (typeof ANIMALS)[number]["id"];
 let currentUser: User | null = null;
-let currentGold = 0;
+let currentCoins = 0;
 let currentPopup: { close: () => void } | undefined;
 let goldUnsubscribe: (() => void) | undefined;
 let loginModalOpen = false;
@@ -52,7 +52,7 @@ WA.onInit().then(async () => {
     const key = RULES_KEY_PREFIX + currentUser.uid;
     if (localStorage.getItem(key) === "yes") return;
     rulesPopupShown = true;
-    currentPopup = WA.ui.openPopup("rulesPopup", "قوانين Yalla City\n\n1. احترم باقي اللاعبين.\n2. لا تشارك كلمة المرور مع أي شخص.\n3. تبدأ حسابات اللاعبين الجدد بـ 5 جولد فقط.\n4. عمليات الشراء تخصم الجولد من حسابك.\n5. استخدم المتجر داخل المنطقة المحددة فقط.", [
+    currentPopup = WA.ui.openPopup("rulesPopup", "قوانين Yalla City\n\n1. احترم باقي اللاعبين.\n2. لا تشارك كلمة المرور مع أي شخص.\n3. تبدأ حسابات اللاعبين الجدد بـ 5 كوينز فقط.\n4. عمليات الشراء تخصم الكوينز من حسابك.\n5. استخدم المتجر داخل المنطقة المحددة فقط.", [
       {
         label: "موافق",
         className: "success",
@@ -66,10 +66,10 @@ WA.onInit().then(async () => {
   };
 
   const updateGoldBanner = (gold: number) => {
-    currentGold = gold;
+    currentCoins = gold;
     WA.ui.banner.openBanner({
       id: "yalla-gold-banner",
-      text: `🪙 جولدك الحالي: ${gold}`,
+      text: `🪙 رصيد الكوينز: ${gold}`,
       bgColor: "#202b45",
       textColor: "#ffffff",
       closable: false,
@@ -92,7 +92,7 @@ WA.onInit().then(async () => {
         const data = snapshot.data();
         const gold = Number(data.gold ?? 0);
         const animals = Array.isArray(data.animals) ? data.animals : [];
-        if (gold < animal.price) throw new Error(`الجولد غير كافي. تحتاج ${animal.price} جولد لشراء ${animal.label}.`);
+        if (gold < animal.price) throw new Error(`الكوينز غير كافي. تحتاج ${animal.price} كوينز لشراء ${animal.label}.`);
         transaction.update(userRef, { gold: gold - animal.price, animals: [...animals, animal.id] });
       });
       WA.chat.sendChatMessage(`تم شراء ${animal.label} بنجاح!`, { scope: "local" });
@@ -112,7 +112,7 @@ WA.onInit().then(async () => {
     if (shopPopupOpen) return;
     shopPopupOpen = true;
     const buttons = ANIMALS.map((animal) => ({
-      label: `${animal.emoji} ${animal.label} — ${animal.price} جولد`,
+      label: `${animal.emoji} ${animal.label} — ${animal.price} كوينز`,
       className: "primary" as const,
       callback: (popup: { close: () => void }) => {
         popup.close();
@@ -128,7 +128,7 @@ WA.onInit().then(async () => {
         shopPopupOpen = false;
       },
     });
-    currentPopup = WA.ui.openPopup("shopPopup", `🛍️ متجر الحيوانات\nرصيدك الحالي: ${currentGold} جولد\nاختر الحيوان الذي تريد شراءه:`, buttons);
+    currentPopup = WA.ui.openPopup("shopPopup", `🛍️ متجر الحيوانات\nرصيدك الحالي: ${currentCoins} كوينز\nاختر الحيوان الذي تريد شراءه:`, buttons);
   };
 
   const onSignedIn = async (user: User) => {
