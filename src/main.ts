@@ -77,10 +77,75 @@ WA.onInit().then(async () => {
     ]);
   };
 
-  // Add clearly labeled help buttons to the WorkAdventure action bar.
-  // These are extra player-facing shortcuts; the platform's native moderation menu
-  // is owned by WorkAdventure and cannot be replaced from a map script.
+  const openYallaMenu = () => {
+    const buttons = [
+      {
+        label: "🪙 رصيد الكوينز",
+        className: "primary" as const,
+        callback: (popup: { close: () => void }) => {
+          popup.close();
+          WA.ui.openPopup("yalla-coins-info", `🪙 رصيدك الحالي: ${currentCoins} كوينز`, [
+            { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+          ]);
+        },
+      },
+      {
+        label: "👤 ملفي الشخصي",
+        className: "primary" as const,
+        callback: (popup: { close: () => void }) => {
+          popup.close();
+          if (!currentUser) {
+            openLogin();
+            return;
+          }
+          void getDoc(doc(db, "users", currentUser.uid)).then((profile) => {
+            const data = profile.exists() ? profile.data() : {};
+            const owned = Array.isArray(data.animals) ? data.animals : [];
+            const animalNames = ANIMALS.filter((animal) => owned.includes(animal.id)).map((animal) => animal.emoji + " " + animal.label);
+            WA.ui.openPopup("yalla-profile-info", `👤 ملفك الشخصي\n\nرقم الحساب: ${data.phone ?? "غير مسجل"}\nرصيد الكوينز: ${Number(data.gold ?? currentCoins)}\nحيواناتك: ${animalNames.join("، ") || "لسه ما اشتريتش حيوانات"}`, [
+              { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+            ]);
+          }).catch(() => WA.chat.sendChatMessage("تعذر تحميل ملفك الشخصي. تحقق من اتصال قاعدة البيانات.", { scope: "local" }));
+        },
+      },
+      {
+        label: "🐾 حيواناتي / المتجر",
+        className: "primary" as const,
+        callback: (popup: { close: () => void }) => {
+          popup.close();
+          if (!currentUser) { openLogin(); return; }
+          void getDoc(doc(db, "users", currentUser.uid)).then((profile) => {
+            const owned = profile.exists() && Array.isArray(profile.data().animals) ? profile.data().animals : [];
+            const names = ANIMALS.filter((animal) => owned.includes(animal.id)).map((animal) => animal.emoji + " " + animal.label);
+            WA.ui.openPopup("yalla-animals-info", `🐾 حيواناتك الحالية: ${names.join("، ") || "لا توجد حيوانات بعد"}\n\nأسعار المتجر: قطة 2، كلب 3، حصان 10، أسد 20 كوينز. اقترب من منطقة المتجر للشراء.`, [
+              { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+            ]);
+          }).catch(() => WA.chat.sendChatMessage("تعذر تحميل الحيوانات من قاعدة البيانات.", { scope: "local" }));
+        },
+      },
+      {
+        label: "📜 قوانين اللعبة",
+        className: "primary" as const,
+        callback: (popup: { close: () => void }) => { popup.close(); openRules(); },
+      },
+      {
+        label: "🎮 شرح اللعبة",
+        className: "primary" as const,
+        callback: (popup: { close: () => void }) => { popup.close(); openHelp(); },
+      },
+      { label: "إغلاق", className: "primary" as const, callback: (popup: { close: () => void }) => popup.close() },
+    ];
+    WA.ui.openPopup("yalla-city-main-menu", "🌆 Yalla City — اختر خدمة:", buttons);
+  };
+
+  // Add player-facing shortcuts. The native moderation window is owned by WorkAdventure
+  // and cannot be covered or replaced by a map script.
   try {
+    WA.ui.actionBar.addButton({
+      id: "yalla-city-menu",
+      label: "🌆 Yalla City",
+      callback: openYallaMenu,
+    });
     WA.ui.actionBar.addButton({
       id: "yalla-game-rules",
       label: "📜 قوانين اللعبة",
