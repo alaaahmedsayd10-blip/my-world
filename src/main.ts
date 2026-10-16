@@ -6,6 +6,7 @@ WA.onInit().then(() => {
 
     WA.chat.onChatMessage((msg) => {
         if(msg === "/rules"){
+            // @ts-ignore
             WA.ui.modal.openModal({
                 title: "قوانين اللعبة",
                 src: "https://alaaahmedsayd10-blip.github.io/my-world/rules.html",
