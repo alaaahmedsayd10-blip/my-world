@@ -22,10 +22,20 @@
       "type": "string",
       "value": "Yalla City - Conference"
     },
-    {
+     {
       "name": "script",
       "type": "string",
       "value": "src/main.ts"
+    },
+    {
+      "name": "adminTag",
+      "type": "string",
+      "value": "no-admin"
+    },
+    {
+      "name": "moderatorTag",
+      "type": "string",
+      "value": "no-admin"
     }
   ],
   "infinite": false,
