@@ -479,15 +479,25 @@
          "type":"string",
          "value":"conference.png"
         }, 
+                {
+            "name":"mapName",
+            "type":"string",
+            "value":"Conference"
+        },
         {
-         "name":"mapName",
-         "type":"string",
-         "value":"Conference"
-        }, 
+            "name":"adminTag",
+            "type":"string",
+            "value":"superadmin"
+        },
         {
-         "name":"script",
-         "type":"string",
-         "value":"src/main.ts"
+            "name":"moderatorTag",
+            "type":"string",
+            "value":"superadmin"
+        },
+        {
+            "name":"script",
+            "type":"string",
+            "value":"src/main.ts"
         }],
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
