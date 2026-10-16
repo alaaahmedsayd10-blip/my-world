@@ -16,6 +16,9 @@ service cloud.firestore {
         && request.resource.data.animals is list
         && request.resource.data.animals.size() == resource.data.animals.size() + 1
         && request.resource.data.animals[resource.data.animals.size()] in ['cat', 'dog', 'horse', 'lion']
+        && resource.data.gold >= (request.resource.data.animals[resource.data.animals.size()] == 'cat' ? 2 :
+           request.resource.data.animals[resource.data.animals.size()] == 'dog' ? 3 :
+           request.resource.data.animals[resource.data.animals.size()] == 'horse' ? 10 : 20)
         && request.resource.data.gold == resource.data.gold -
           (request.resource.data.animals[resource.data.animals.size()] == 'cat' ? 2 :
            request.resource.data.animals[resource.data.animals.size()] == 'dog' ? 3 :
