@@ -1,6 +1,13 @@
 {
   "compressionlevel": -1,
   "height": 14,
+   "properties": [
+  {
+   "name": "adminTag",
+   "type": "string",
+   "value": "no-admin-ever-999"
+  }
+ ],
   "infinite": false,
   "layers": [
     {
