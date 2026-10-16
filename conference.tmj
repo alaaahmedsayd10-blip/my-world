@@ -412,8 +412,57 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":62,
- "nextobjectid":24,
+ },
+        {
+         "draworder":"topdown",
+         "id":62,
+         "name":"applications",
+         "objects":[
+                {
+                 "height":32,
+                 "id":24,
+                 "name":"قوانين اللعبة",
+                 "properties":[
+                        {"name":"openWebsite","type":"string","value":"https://alaaahmedsayd10-blip.github.io/my-world/rules.html"},
+                        {"name":"applicationMenuTitle","type":"string","value":"📜 قوانين اللعبة"},
+                        {"name":"openWebsiteWidth","type":"float","value":50},
+                        {"name":"openWebsiteTrigger","type":"string","value":"onAction"}
+                 ],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":32,
+                 "y":32
+                },
+                {
+                 "height":32,
+                 "id":25,
+                 "name":"لوحة الادمن",
+                 "properties":[
+                        {"name":"openWebsite","type":"string","value":"https://alaaahmedsayd10-blip.github.io/my-world/admin.html"},
+                        {"name":"applicationMenuTitle","type":"string","value":"🛡️ لوحة الادمن"},
+                        {"name":"openWebsiteWidth","type":"float","value":60},
+                        {"name":"openWebsiteTrigger","type":"string","value":"onAction"},
+                        {"name":"tag","type":"string","value":"admin"}
+                 ],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":32
+                }
+         ],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }
+ ],
+ "nextlayerid":63,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "properties":[
         {
