@@ -2,7 +2,7 @@
 
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc, getFirestore, onSnapshot, runTransaction } from "firebase/firestore";
 import { firebaseConfig } from "./firebase-config";
 
@@ -169,21 +169,25 @@ WA.onInit().then(async () => {
     const userRef = doc(db, "users", user.uid);
     try {
       const snapshot = await getDoc(userRef);
-      if (!snapshot.exists()) {
-        WA.chat.sendChatMessage("ملف حسابك غير موجود في قاعدة البيانات. افتح تسجيل الدخول مرة أخرى لإكمال إعداد الحساب.", { scope: "local" });
-        // Return to the login page so it can attempt to create the missing profile.
-        await signOut(auth);
-        return;
-      }
+      // Auth can fire before login.html finishes creating a missing Firestore profile.
+      // Do not sign out or switch users during this race; subscribe and wait for the profile.
       currentUser = user;
       localStorage.setItem(USER_UID_KEY, user.uid);
-      const initialGold = Number(snapshot.data().gold ?? 0);
-      updateGoldBanner(initialGold);
+      if (snapshot.exists()) {
+        updateGoldBanner(Number(snapshot.data().gold ?? 0));
+      }
       goldUnsubscribe = onSnapshot(userRef, (updated) => {
-        if (updated.exists()) updateGoldBanner(Number(updated.data().gold ?? 0));
-      }, (error) => console.error("Gold listener error:", error));
-      loginModalOpen = false;
-      showRulesIfNeeded();
+        if (updated.exists()) {
+          updateGoldBanner(Number(updated.data().gold ?? 0));
+          loginModalOpen = false;
+          showRulesIfNeeded();
+        } else {
+          WA.chat.sendChatMessage("جاري تجهيز ملف حسابك...", { scope: "local" });
+        }
+      }, (error) => {
+        console.error("Player profile listener error:", error);
+        WA.chat.sendChatMessage("تعذر قراءة ملف حسابك. راجع إعدادات Firestore.", { scope: "local" });
+      });
     } catch (error) {
       console.error("Could not load player profile:", error);
       WA.chat.sendChatMessage("تعذر تحميل حسابك. تأكد من إعداد Firestore Rules.", { scope: "local" });
