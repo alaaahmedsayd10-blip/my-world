@@ -86,8 +86,8 @@
           await setDoc(doc(db, 'users', credential.user.uid), { phone, gold: 5, animals: [], createdAt: serverTimestamp() });
         } else {
           credential = await signInWithEmailAndPassword(auth, email, password);
-          const profile = await getDoc(doc(db, 'users', credential.user.uid));
-          if (!profile.exists()) throw new Error('حساب المصادقة موجود لكن ملف اللاعب غير موجود. تواصل مع الإدارة.');
+          // finishLogin repairs a missing Firestore profile for this same Auth account.
+          // Do not reject valid credentials merely because the profile document is missing.
         }
         await finishLogin(credential.user, phone);
       } catch (error) { showError(error); }
