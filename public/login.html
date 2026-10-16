@@ -44,14 +44,14 @@
     function normalizePhone(value) { return value.trim().replace(/[\s()+-]/g, ''); }
     function phoneToEmail(phone) {
       const digits = normalizePhone(phone);
-      if (!/^\\d{8,15}$/.test(digits)) throw new Error('اكتب رقم تليفون صحيحًا بالأرقام فقط، من 8 إلى 15 رقمًا.');
+      if (!/^\d{8,15}$/.test(digits)) throw new Error('اكتب رقم تليفون صحيحًا بالأرقام فقط، من 8 إلى 15 رقمًا.');
       return `${digits}@phone.yalla-city.app`;
     }
     function phoneLoginCandidates(phone) {
       const digits = normalizePhone(phone);
       const candidates = [digits];
-      if (/^01\\d{9}$/.test(digits)) candidates.push('20' + digits.slice(1));
-      if (/^201\\d{9}$/.test(digits)) candidates.push('0' + digits.slice(2));
+      if (/^01\d{9}$/.test(digits)) candidates.push('20' + digits.slice(1));
+      if (/^201\d{9}$/.test(digits)) candidates.push('0' + digits.slice(2));
       return [...new Set(candidates)];
     }
     function showError(error) {
