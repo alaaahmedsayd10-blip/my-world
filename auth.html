@@ -1,38 +1,76 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="text-align:center;padding:30px;background:#1a1a1a;color:white;font-family:sans-serif">
+<html dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>
+body{background:#0f0f0f;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;font-family:sans-serif}
+.card{background:#1e1e1e;padding:25px;border-radius:16px;width:310px;text-align:center;box-shadow:0 0 20px #000}
+input{width:92%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #333;background:#2a2a2a;color:white;outline:none}
+button{padding:12px;width:100%;border:none;border-radius:10px;margin-top:8px;cursor:pointer;font-weight:bold;font-size:15px}
+.login{background:#00c851;color:white}
+.reg{background:#333;color:white}
+#msg{margin-top:12px;font-size:14px;min-height:20px}
+</style>
+</head>
+<body>
+<div class="card">
 <h2>🎮 دخول اللعبة</h2>
-<input id="name" placeholder="اسمك" style="padding:12px;width:80%;margin:8px;border-radius:6px;border:none">
-<br>
-<input id="pass" type="password" placeholder="كلمة السر" style="padding:12px;width:80%;margin:8px;border-radius:6px;border:none">
-<br>
-<button id="b" style="padding:12px 30px;margin-top:15px;background:#00d26a;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer">دخول</button>
-<p id="s"></p>
-
+<input id="email" type="email" placeholder="الإيميل">
+<input id="pass" type="password" placeholder="الباسورد">
+<button class="login" onclick="login()">دخول</button>
+<button class="reg" onclick="register()">تسجيل حساب جديد</button>
+<p id="msg"></p>
+</div>
 <script>
-b.onclick = () => {
-  const n = document.getElementById('name').value.trim();
-  const p = document.getElementById('pass').value.trim();
-  if(!n || !p){ s.innerText = "اكتب اسم وباسورد"; return; }
-  
-  // حفظ بسيط
-  localStorage.setItem('game_user', n);
-  localStorage.setItem('game_pass', p);
-  localStorage.setItem('isLogged', 'true');
-  
-  s.innerText = "أهلا " + n + " ✅ تم الدخول";
-  s.style.color = "#00d26a";
-  
-  // ابعت للعبة انه دخل
-  setTimeout(()=>{
-    window.parent.postMessage({type:'LOGIN_SUCCESS', name:n}, '*');
-  }, 800);
+const firebaseConfig = {
+  apiKey: "AIzaSyC7nexX-dwj_IhYC5EaS-DU_YQeE6-acDw",
+  authDomain: "game-af286.firebaseapp.com",
+  projectId: "game-af286",
+  storageBucket: "game-af286.firebasestorage.app",
+  messagingSenderId: "567693078252",
+  appId: "1:567693078252:web:3b5d6475a583f1f7347fc9",
+  measurementId: "G-JKFYDGCFML"
 };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-// لو داخل قبل كده
-const old = localStorage.getItem('game_user');
-if(old){ name.value = old; s.innerText = "مرحبا بعودتك " + old; }
+function register(){
+ const email=document.getElementById('email').value.trim();
+ const pass=document.getElementById('pass').value;
+ if(!email||!pass){ msg.innerText='اكتب الايميل والباسورد'; return; }
+ msg.innerText='جاري التسجيل...';
+ auth.createUserWithEmailAndPassword(email,pass)
+ .then(u=>{
+   return db.collection('players').doc(u.user.uid).set({
+     email: email,
+     createdAt: firebase.firestore.FieldValue.serverTimestamp()
+   });
+ })
+ .then(()=>{
+   msg.innerText='✅ تم التسجيل! أهلا '+document.getElementById('email').value;
+   setTimeout(()=>{ try{parent.WA.ui.modal.closeModal(); parent.WA.chat.sendChatMessage('دخل اللعبة 🔥','')}catch(e){} },1200);
+ })
+ .catch(e=> msg.innerText='❌ '+e.message);
+}
+
+function login(){
+ const email=document.getElementById('email').value.trim();
+ const pass=document.getElementById('pass').value;
+ if(!email||!pass){ msg.innerText='اكتب الايميل والباسورد'; return; }
+ msg.innerText='جاري الدخول...';
+ auth.signInWithEmailAndPassword(email,pass)
+ .then(()=>{
+   msg.innerText='✅ تم الدخول أهلا '+email;
+   setTimeout(()=>{ try{parent.WA.ui.modal.closeModal();}catch(e){} },1000);
+ })
+ .catch(e=> msg.innerText='❌ '+e.message);
+}
+const msg=document.getElementById('msg');
 </script>
 </body>
 </html>
