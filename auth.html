@@ -17,31 +17,34 @@ const cfg={apiKey:"AIzaSyC7nexX-dwj_IhYC5EaS-DU_YQeE6-acDw",authDomain:"game-af2
 firebase.initializeApp(cfg);
 const auth=firebase.auth(), db=firebase.firestore();
 const charName=new URLSearchParams(location.search).get('name')||'لاعب';
-
 WA.onInit().then(()=>{}).catch(()=>{});
 
 function closeModal(){
-  msg.innerText='✅ تم بنجاح...';
+  const em = auth.currentUser ? auth.currentUser.email : document.getElementById('email').value;
+  try{ WA.player.state.saveVariable('email', em); }catch(e){}
+  try{ localStorage.setItem('wa_email', em); }catch(e){}
+  try{ parent.localStorage.setItem('wa_email', em); }catch(e){}
   localStorage.setItem('wa_logged','1');
+  document.getElementById('msg').innerText='✅ تم بنجاح...';
   try{ WA.ui.modal.closeModal(); }catch(e){}
   try{ parent.WA.ui.modal.closeModal(); }catch(e){}
   try{ window.parent.WA.ui.modal.closeModal(); }catch(e){}
-  setTimeout(()=>{ try{parent.WA.ui.modal.closeModal()}catch{} }, 500);
+  setTimeout(()=>{ try{parent.WA.ui.modal.closeModal()}catch{} }, 700);
 }
 
 function saveUser(u){
-  db.collection('players').doc(u.uid).set({email:u.email,charName:charName,created:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(closeModal);
+  db.collection('players').doc(u.uid).set({email:u.email,charName:charName,created:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(closeModal).catch(e=>{document.getElementById('msg').innerText=e.message});
 }
 
 function doReg(){
-  const e=email.value.trim(), p=pass.value;
-  if(!e||p.length<6){msg.innerText='اكتب إيميل صحيح وباسورد 6 حروف';return;}
-  msg.innerText='...بيسجل';
-  auth.createUserWithEmailAndPassword(e,p).then(r=>saveUser(r.user)).catch(err=>msg.innerText=err.message);
+  const e=document.getElementById('email').value.trim(), p=document.getElementById('pass').value;
+  if(!e||p.length<6){document.getElementById('msg').innerText='اكتب إيميل صحيح وباسورد 6 حروف';return;}
+  document.getElementById('msg').innerText='...بيسجل';
+  auth.createUserWithEmailAndPassword(e,p).then(r=>saveUser(r.user)).catch(err=>document.getElementById('msg').innerText=err.message);
 }
 function doLogin(){
-  const e=email.value.trim(), p=pass.value;
-  msg.innerText='...بيدخل';
-  auth.signInWithEmailAndPassword(e,p).then(r=>saveUser(r.user)).catch(err=>msg.innerText='الإيميل أو الباس غلط');
+  const e=document.getElementById('email').value.trim(), p=document.getElementById('pass').value;
+  document.getElementById('msg').innerText='...بيدخل';
+  auth.signInWithEmailAndPassword(e,p).then(r=>saveUser(r.user)).catch(err=>document.getElementById('msg').innerText='الإيميل أو الباس غلط');
 }
 </script></body></html>
