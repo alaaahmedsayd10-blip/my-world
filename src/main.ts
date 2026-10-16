@@ -7,7 +7,9 @@ WA.onInit().then(() => {
     WA.chat.onChatMessage((msg) => {
         if(msg === "/rules"){
             WA.ui.modal.openModal({
+                title: "قوانين اللعبة",
                 src: "https://alaaahmedsayd10-blip.github.io/my-world/rules.html",
+                allow: "fullscreen"
             });
         }
         if(msg.startsWith("/broadcast ")){
