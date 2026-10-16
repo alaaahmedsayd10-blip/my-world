@@ -30,6 +30,8 @@ jobs:
 
       - name: Build project
         run: npm run buildmap
+      - name: Create .nojekyll file
+        run: touch dist/.nojekyll
 
       - name: Extract UPLOAD_MODE from .env
         run: |
