@@ -1,94 +1,21 @@
-<!DOCTYPE html>
-<html dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<style>
-body{margin:0;height:100vh;background:linear-gradient(135deg,#0f0f0f,#1a1a2e);color:#fff;display:flex;justify-content:center;align-items:center;font-family:sans-serif}
-.card{background:#222;padding:25px;border-radius:18px;width:330px;text-align:center;box-shadow:0 10px 40px #000}
-h2{margin:0 0 15px}
-input{width:92%;padding:12px;margin:7px 0;border-radius:10px;border:1px solid #444;background:#2a2a2a;color:#fff}
-button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:10px;font-weight:bold;cursor:pointer}
-.login{background:#00c851;color:#fff}
-.reg{background:#444;color:#fff}
-#msg{margin-top:12px;min-height:20px;font-size:13px}
-small{color:#aaa}
-</style>
-</head>
-<body>
-<div class="card">
-<h2>🎮 إنشاء حساب جديد</h2>
-<small>سجل الأول عشان تدخل اللعبة</small>
-<input id="charName" placeholder="اسم الشخصية داخل اللعبة (مثال: علاء)">
-<input id="email" type="email" placeholder="الإيميل">
-<input id="pass" type="password" placeholder="الباسورد (6 حروف على الأقل)">
-<button class="login" onclick="register()">تسجيل وإبدأ اللعب 🚀</button>
-<button class="reg" onclick="login()">عندي حساب، دخول</button>
+<style>body{margin:0;height:100vh;background:#111;display:flex;justify-content:center;align-items:center;color:#fff;font-family:sans-serif}.card{background:#1e1e1e;padding:24px;border-radius:18px;width:320px;border:1px solid #333}input{width:93%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #444;background:#2a2a2a;color:#fff}button{width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;font-weight:bold;cursor:pointer}.main{background:#fff;color:#000}.sec{background:#333;color:#fff}#msg{font-size:12px;color:#aaa;margin-top:10px;text-align:center}</style>
+</head><body><div class="card">
+<h3 style="margin:0 0 6px">تسجيل الدخول</h3><p style="font-size:12px;color:#888;margin:0 0 12px">ادخل بحسابك عشان تحفظ تقدمك</p>
+<input id="email" type="email" placeholder="البريد الإلكتروني">
+<input id="pass" type="password" placeholder="كلمة السر">
+<button class="main" onclick="login()">دخول</button>
+<button class="sec" onclick="register()">إنشاء حساب جديد</button>
 <p id="msg"></p>
 </div>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC7nexX-dwj_IhYC5EaS-DU_YQeE6-acDw",
-  authDomain: "game-af286.firebaseapp.com",
-  projectId: "game-af286",
-  storageBucket: "game-af286.firebasestorage.app",
-  messagingSenderId: "567693078252",
-  appId: "1:567693078252:web:3b5d6475a583f1f7347fc9"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const msgEl = document.getElementById('msg');
-
-// دخول تلقائي لو مسجل قبل كده
-auth.onAuthStateChanged(user=>{
-  if(user && localStorage.getItem('wa_logged')){
-    msgEl.innerText='أهلا بعودتك...';
-    setTimeout(()=>{ try{parent.WA.ui.modal.closeModal()}catch{} },800);
-  }
-});
-
-function register(){
- const charName=document.getElementById('charName').value.trim();
- const email=document.getElementById('email').value.trim();
- const pass=document.getElementById('pass').value;
- if(!charName){ msgEl.innerText='اكتب اسم الشخصية'; return; }
- if(!email||!pass){ msgEl.innerText='اكتب الإيميل والباسورد'; return; }
- msgEl.innerText='جاري إنشاء الحساب...';
- auth.createUserWithEmailAndPassword(email,pass)
- .then(u=> db.collection('players').doc(u.user.uid).set({
-   charName: charName,
-   email: email,
-   createdAt: firebase.firestore.FieldValue.serverTimestamp()
- }))
- .then(()=>{
-   localStorage.setItem('wa_logged','1');
-   localStorage.setItem('playerName', document.getElementById('charName').value);
-   msgEl.innerText='✅ تم إنشاء حساب '+charName+'! بتدخل اللعبة...';
-   setTimeout(()=>{ try{parent.WA.ui.modal.closeModal(); parent.WA.chat.sendChatMessage('أنا '+charName+' دخلت اللعبة لأول مرة! 🎉','')}catch{} },1200);
- })
- .catch(e=> msgEl.innerText='❌ '+e.message);
-}
-
-function login(){
- const email=document.getElementById('email').value.trim();
- const pass=document.getElementById('pass').value;
- if(!email||!pass){ msgEl.innerText='اكتب الإيميل والباسورد'; return; }
- msgEl.innerText='جاري الدخول...';
- auth.signInWithEmailAndPassword(email,pass)
- .then(()=> db.collection('players').doc(auth.currentUser.uid).get())
- .then(doc=>{
-   const data=doc.data();
-   if(data){ localStorage.setItem('playerName', data.charName); }
-   localStorage.setItem('wa_logged','1');
-   msgEl.innerText='✅ أهلا بعودتك '+(data?.charName||'');
-   setTimeout(()=>{ try{parent.WA.ui.modal.closeModal()}catch{} },800);
- })
- .catch(e=> msgEl.innerText='❌ '+e.message);
-}
-</script>
-</body>
-</html>
+const firebaseConfig={apiKey:"AIzaSyC7nexX-dwj_IhYC5EaS-DU_YQeE6-acDw",authDomain:"game-af286.firebaseapp.com",projectId:"game-af286",storageBucket:"game-af286.firebasestorage.app",messagingSenderId:"567693078252",appId:"1:567693078252:web:3b5d6475a583f1f7347fc9"};
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.firestore();
+const playerName=new URLSearchParams(location.search).get('name')||'لاعب';
+function save(user){localStorage.setItem('wa_logged','1');db.collection('players').doc(user.uid).set({email:user.email,charName:playerName,lastLogin:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(()=>{try{parent.WA.ui.modal.closeModal();}catch{}});}
+function register(){const e=email.value.trim(),p=pass.value;if(!e||!p){msg.innerText='اكتب البريد والباس';return;}msg.innerText='...';auth.createUserWithEmailAndPassword(e,p).then(r=>save(r.user)).catch(err=>msg.innerText=err.message);}
+function login(){const e=email.value.trim(),p=pass.value;msg.innerText='...';auth.signInWithEmailAndPassword(e,p).then(r=>save(r.user)).catch(err=>msg.innerText=err.message);}
+</script></body></html>
