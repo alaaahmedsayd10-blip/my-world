@@ -2,20 +2,21 @@
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 WA.onInit().then(() => {
-    WA.ui.actionBar.addButton({
-        id: 'login-btn',
-        label: 'دخول',
-        imageSrc: 'https://cdn-icons-png.flaticon.com/512/360/360946.png',
-        toolTip: 'تسجيل دخول',
-        callback: () => {
-            (WA.ui.modal.openModal as any)({
-                title: 'دخول',
-                src: 'auth.html',
-                allowApi: true,
-                position: 'center',
-            });
-        }
-    } as any);
+    // لو مش مسجل قبل كده، افتح صفحة التسجيل أول ما اللعبة تفتح
+    const logged = localStorage.getItem('wa_logged');
+    
+    if (!logged) {
+        (WA.ui.modal.openModal as any)({
+            title: 'تسجيل حساب',
+            src: 'auth.html',
+            allowApi: true,
+            position: 'center',
+            allowFullScreen: false,
+        });
+    } else {
+        const name = localStorage.getItem('playerName') || 'لاعب';
+        WA.chat.sendChatMessage(`أهلا بعودتك يا ${name} 👋`, 'النظام');
+    }
 
     bootstrapExtra().catch(e => console.error(e));
 }).catch(e => console.error(e));
