@@ -3225,7 +3225,13 @@
           "height": 96,
           "id": 22,
           "name": "to-office",
-          "properties": [],
+          "properties": [
+            {
+              "name": "exitUrl",
+              "type": "string",
+              "value": "office.tmj#from-conference"
+            }
+          ],
           "rotation": 0,
           "type": "area",
           "visible": true,
