@@ -92,7 +92,7 @@ WA.onInit().then(async () => {
         const data = snapshot.data();
         const gold = Number(data.gold ?? 0);
         const animals = Array.isArray(data.animals) ? data.animals : [];
-        if (gold < animal.price) throw new Error(`الكوينز غير كافي. تحتاج ${animal.price} كوينز لشراء ${animal.label}.`);
+        if (gold < animal.price) throw new Error(`رصيد الكوينز غير كافٍ. تحتاج ${animal.price} كوينز لشراء ${animal.label}.`);
         transaction.update(userRef, { gold: gold - animal.price, animals: [...animals, animal.id] });
       });
       WA.chat.sendChatMessage(`تم شراء ${animal.label} بنجاح!`, { scope: "local" });
@@ -160,6 +160,10 @@ WA.onInit().then(async () => {
       void onSignedIn(user);
     } else {
       currentUser = null;
+      if (goldUnsubscribe) {
+        goldUnsubscribe();
+        goldUnsubscribe = undefined;
+      }
       localStorage.removeItem(USER_UID_KEY);
       openLogin();
     }
