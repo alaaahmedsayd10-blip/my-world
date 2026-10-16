@@ -2,7 +2,7 @@
 
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, getDoc, getFirestore, onSnapshot, runTransaction } from "firebase/firestore";
 import { firebaseConfig } from "./firebase-config";
 
@@ -66,13 +66,13 @@ WA.onInit().then(async () => {
   };
 
   const openRules = () => {
-    WA.ui.openPopup("yalla-rules-menu", "📜 قوانين Yalla City\\n\\n1. احترم جميع اللاعبين.\\n2. ممنوع الإزعاج أو الإساءة.\\n3. لا تشارك بيانات حسابك أو كلمة المرور.\\n4. لا تستخدم الثغرات أو تحاول تعطيل اللعبة.\\n5. تعامل باحترام مع الجميع.", [
+    WA.ui.openPopup("yalla-rules-menu", "📜 قوانين Yalla City\n\n1. احترم جميع اللاعبين.\n2. ممنوع الإزعاج أو الإساءة.\n3. لا تشارك بيانات حسابك أو كلمة المرور.\n4. لا تستخدم الثغرات أو تحاول تعطيل اللعبة.\n5. تعامل باحترام مع الجميع.", [
       { label: "إغلاق", className: "primary", callback: (popup) => popup.close() },
     ]);
   };
 
   const openHelp = () => {
-    WA.ui.openPopup("yalla-help-menu", "🎮 شرح اللعبه\\n\\n• استخدم أزرار الحركة على الهاتف أو لوحة المفاتيح على الكمبيوتر للتحرك.\\n• اقترب من الأبواب واتبع منطقة الانتقال للدخول إلى الخريطة الأخرى.\\n• استخدم الدردشة للتواصل مع اللاعبين.\\n• سجّل الدخول لمتابعة رصيد الكوينز.\\n• اقترب من منطقة المتجر لشراء الحيوانات بالكوينز.", [
+    WA.ui.openPopup("yalla-help-menu", "🎮 شرح اللعبه\n\n• استخدم أزرار الحركة على الهاتف أو لوحة المفاتيح على الكمبيوتر للتحرك.\n• اقترب من الأبواب واتبع منطقة الانتقال للدخول إلى الخريطة الأخرى.\n• استخدم الدردشة للتواصل مع اللاعبين.\n• سجّل الدخول لمتابعة رصيد الكوينز.\n• اقترب من منطقة المتجر لشراء الحيوانات بالكوينز.", [
       { label: "إغلاق", className: "primary", callback: (popup) => popup.close() },
     ]);
   };
@@ -162,16 +162,21 @@ WA.onInit().then(async () => {
   };
 
   const onSignedIn = async (user: User) => {
-    currentUser = user;
-    localStorage.setItem(USER_UID_KEY, user.uid);
-    if (goldUnsubscribe) goldUnsubscribe();
+    if (goldUnsubscribe) {
+      goldUnsubscribe();
+      goldUnsubscribe = undefined;
+    }
     const userRef = doc(db, "users", user.uid);
     try {
       const snapshot = await getDoc(userRef);
       if (!snapshot.exists()) {
-        WA.chat.sendChatMessage("ملف حسابك غير موجود في Firestore. تواصل مع إدارة اللعبة.", { scope: "local" });
+        WA.chat.sendChatMessage("ملف حسابك غير موجود في قاعدة البيانات. افتح تسجيل الدخول مرة أخرى لإكمال إعداد الحساب.", { scope: "local" });
+        // Return to the login page so it can attempt to create the missing profile.
+        await signOut(auth);
         return;
       }
+      currentUser = user;
+      localStorage.setItem(USER_UID_KEY, user.uid);
       const initialGold = Number(snapshot.data().gold ?? 0);
       updateGoldBanner(initialGold);
       goldUnsubscribe = onSnapshot(userRef, (updated) => {
