@@ -147,6 +147,44 @@ WA.onInit().then(async () => {
       callback: openYallaMenu,
     });
     WA.ui.actionBar.addButton({
+      id: "yalla-coins-shortcut",
+      label: "🪙 الكوينز",
+      callback: () => {
+        WA.ui.openPopup("yalla-coins-shortcut-popup", `🪙 رصيدك الحالي: ${currentCoins} كوينز`, [
+          { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+        ]);
+      },
+    });
+    WA.ui.actionBar.addButton({
+      id: "yalla-profile-shortcut",
+      label: "👤 ملفي",
+      callback: () => {
+        if (!currentUser) { openLogin(); return; }
+        void getDoc(doc(db, "users", currentUser.uid)).then((profile) => {
+          const data = profile.exists() ? profile.data() : {};
+          const owned = Array.isArray(data.animals) ? data.animals : [];
+          const names = ANIMALS.filter((animal) => owned.includes(animal.id)).map((animal) => animal.emoji + " " + animal.label);
+          WA.ui.openPopup("yalla-profile-shortcut-popup", `👤 ملفك الشخصي\n\nرقم الحساب: ${data.phone ?? "غير مسجل"}\nرصيد الكوينز: ${Number(data.gold ?? currentCoins)}\nحيواناتك: ${names.join("، ") || "لسه ما اشتريتش حيوانات"}`, [
+            { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+          ]);
+        }).catch(() => WA.chat.sendChatMessage("تعذر تحميل ملفك الشخصي.", { scope: "local" }));
+      },
+    });
+    WA.ui.actionBar.addButton({
+      id: "yalla-pets-shortcut",
+      label: "🐾 حيواناتي",
+      callback: () => {
+        if (!currentUser) { openLogin(); return; }
+        void getDoc(doc(db, "users", currentUser.uid)).then((profile) => {
+          const owned = profile.exists() && Array.isArray(profile.data().animals) ? profile.data().animals : [];
+          const names = ANIMALS.filter((animal) => owned.includes(animal.id)).map((animal) => animal.emoji + " " + animal.label);
+          WA.ui.openPopup("yalla-pets-shortcut-popup", `🐾 حيواناتك: ${names.join("، ") || "لا توجد حيوانات بعد"}\n\nأسعار المتجر: قطة 2، كلب 3، حصان 10، أسد 20 كوينز. اقترب من منطقة المتجر للشراء.`, [
+            { label: "إغلاق", className: "primary", callback: (p) => p.close() },
+          ]);
+        }).catch(() => WA.chat.sendChatMessage("تعذر تحميل الحيوانات.", { scope: "local" }));
+      },
+    });
+    WA.ui.actionBar.addButton({
       id: "yalla-game-rules",
       label: "📜 قوانين اللعبة",
       callback: openRules,
