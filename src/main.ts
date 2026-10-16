@@ -1,23 +1,59 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
+
 WA.onInit().then(() => {
+    const name = WA.player.name;
     if (!localStorage.getItem('wa_logged')) {
-        // @ts-ignore
-        WA.ui.modal.openModal({ title: '', src: `auth.html?name=${encodeURIComponent(WA.player.name)}`, allowApi: true, position: 'center' });
+        WA.ui.modal.openModal({
+            title: "حسابك",
+            src: "auth.html?name=" + encodeURIComponent(name),
+            allowApi: true,
+            position: "center",
+        } as any);
     }
-    // زرار قفل صغير على اليمين
+
     WA.ui.actionBar.addButton({
-        id: 'lock-menu',
-        label: '🔒',
+        id: "lock-btn",
+        label: "🔒 قفل",
         callback: () => {
-            WA.chat.sendChatMessage('🔒 تم قفل القوائم', 'النظام');
-            // @ts-ignore
             WA.ui.modal.closeModal();
         }
     });
-    WA.ui.registerMenuCommand('📜 القوانين', { callback: () => { // @ts-ignore WA.ui.modal.openModal({ title: 'القوانين', src: 'rules.html', allowApi: true, position: 'center' }) } });
-    WA.ui.registerMenuCommand('🛒 المتجر', { callback: () => { // @ts-ignore WA.ui.modal.openModal({ title: 'المتجر', src: 'shop.html', allowApi: true, position: 'center' }) } });
-    WA.ui.registerMenuCommand('🎧 الدعم', { callback: () => { // @ts-ignore WA.ui.modal.openModal({ title: 'الدعم', src: 'support.html', allowApi: true, position: 'center' }) } });
-    bootstrapExtra().catch(()=>{});
+
+    WA.ui.registerMenuCommand("📜 قوانين اللعبة", {
+        callback: () => {
+            WA.ui.modal.openModal({
+                title: "القوانين",
+                src: "rules.html",
+                allowApi: true,
+                position: "center",
+            } as any);
+        }
+    });
+
+    WA.ui.registerMenuCommand("🛒 المتجر", {
+        callback: () => {
+            WA.ui.modal.openModal({
+                title: "المتجر",
+                src: "shop.html",
+                allowApi: true,
+                position: "center",
+            } as any);
+        }
+    });
+
+    WA.ui.registerMenuCommand("🎧 الدعم", {
+        callback: () => {
+            WA.ui.modal.openModal({
+                title: "الدعم",
+                src: "support.html",
+                allowApi: true,
+                position: "center",
+            } as any);
+        }
+    });
+
+    bootstrapExtra().then(() => {}).catch((e) => console.error(e));
 });
+
 export {};
