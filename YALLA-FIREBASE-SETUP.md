@@ -1,6 +1,6 @@
 # Yalla1 — Firebase login, rules and animal shop
 
-This is an updated WorkAdventure Map Starter Kit. It adds a Firebase Authentication login modal, Firestore player profiles, a coin balance banner, an animal shop zone, game rules confirmation, and a “موقعي الأول” action-bar button.
+This is an updated WorkAdventure Map Starter Kit. It adds a Firebase Authentication login modal, Firestore player profiles, a coin balance banner, an animal shop zone, game rules confirmation, and an animal shop zone.
 
 ## Setup
 
@@ -13,7 +13,7 @@ This is an updated WorkAdventure Map Starter Kit. It adds a Firebase Authenticat
 ## Security notes
 
 - Passwords are handled by Firebase Authentication. They are **not** stored in the Firestore `users` document, hashed or otherwise. Do not store a client-generated password hash in Firestore; it is not a safe substitute for Authentication.
-- New profiles start with exactly 5 coins (stored in the existing Firestore `gold` field for backwards compatibility). The included Firestore rules allow a player to buy one animal per update and enforce the listed prices. Review/test rules in the Firebase Emulator before launch.
+- New profiles start with exactly 5 coins (stored in the existing Firestore `gold` field for backwards compatibility). The included Firestore rules allow a player to buy one animal per update, enforce the listed prices, and reject purchases when the stored balance is too low. Review/test rules in the Firebase Emulator before launch.
 - The rules layer protects profile ownership and the basic purchase shape, but for a production economy you should move purchases to a trusted Cloud Function to protect against edge cases and future client changes.
 - External-site action buttons and automatic chair/door redirects are disabled; the shop is the only intended interaction in its shop zone.
 - The shop zone is a Tiled object layer named `shop` in `conference.tmj`. Move/resize its rectangles in Tiled if you want the shop in a different location.
