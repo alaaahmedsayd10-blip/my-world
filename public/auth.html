@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="text-align:center;padding:30px;background:#1a1a1a;color:white;font-family:sans-serif">
+<h2>🎮 دخول اللعبة</h2>
+<input id="name" placeholder="اسمك" style="padding:12px;width:80%;margin:8px;border-radius:6px;border:none">
+<br>
+<input id="pass" type="password" placeholder="كلمة السر" style="padding:12px;width:80%;margin:8px;border-radius:6px;border:none">
+<br>
+<button id="b" style="padding:12px 30px;margin-top:15px;background:#00d26a;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer">دخول</button>
+<p id="s"></p>
+
+<script>
+b.onclick = () => {
+  const n = document.getElementById('name').value.trim();
+  const p = document.getElementById('pass').value.trim();
+  if(!n || !p){ s.innerText = "اكتب اسم وباسورد"; return; }
+  
+  // حفظ بسيط
+  localStorage.setItem('game_user', n);
+  localStorage.setItem('game_pass', p);
+  localStorage.setItem('isLogged', 'true');
+  
+  s.innerText = "أهلا " + n + " ✅ تم الدخول";
+  s.style.color = "#00d26a";
+  
+  // ابعت للعبة انه دخل
+  setTimeout(()=>{
+    window.parent.postMessage({type:'LOGIN_SUCCESS', name:n}, '*');
+  }, 800);
+};
+
+// لو داخل قبل كده
+const old = localStorage.getItem('game_user');
+if(old){ name.value = old; s.innerText = "مرحبا بعودتك " + old; }
+</script>
+</body>
+</html>
