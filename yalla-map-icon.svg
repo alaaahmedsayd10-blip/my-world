@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe76b"/><stop offset=".55" stop-color="#ff9d00"/><stop offset="1" stop-color="#ff4d00"/></linearGradient><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#243cff"/><stop offset="1" stop-color="#6500b8"/></linearGradient><filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-<circle cx="128" cy="128" r="116" fill="#07152e" stroke="#19d9ff" stroke-width="5"/>
-<circle cx="128" cy="128" r="103" fill="url(#b)" stroke="#7d55ff" stroke-width="5"/>
-<path d="M80 56 L92 31 L111 49 L128 18 L145 49 L164 31 L176 56 L165 70 L91 70Z" fill="url(#g)" stroke="#fff0a0" stroke-width="4" stroke-linejoin="round"/>
-<text x="128" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="51" fill="url(#g)" stroke="#501b8e" stroke-width="7" paint-order="stroke" filter="url(#s)">Yalla</text>
-<path d="M75 164 Q128 184 181 164 L171 184 Q128 203 85 184Z" fill="#11d9ff" stroke="#fff" stroke-width="3"/>
-<path d="M42 110 l8 17 18 3 -14 12 4 18 -16 -9 -16 9 4 -18 -14 -12 18 -3Z" fill="#ffe56d"/>
-<path d="M214 110 l7 15 16 2 -12 11 3 16 -14 -8 -14 8 3 -16 -12 -11 16 -2Z" fill="#ffe56d"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Yalla City">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#102b68"/><stop offset=".55" stop-color="#5423a8"/><stop offset="1" stop-color="#150d3c"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff6a3"/><stop offset=".42" stop-color="#ffc52e"/><stop offset="1" stop-color="#ff6a00"/></linearGradient>
+<linearGradient id="cyan" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a6ffff"/><stop offset="1" stop-color="#14bde9"/></linearGradient>
+<filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="128" cy="128" r="119" fill="#06152f" stroke="#20dfff" stroke-width="4"/>
+<circle cx="128" cy="128" r="109" fill="url(#bg)" stroke="#8d65ff" stroke-width="3"/>
+<path d="M36 151V119l16-12v44M54 151V96l20-15v70M77 151v-35l15-11v46M164 151V105l16-14v60M185 151V82l20 15v54M208 151v-34l12-9v43" fill="#142e67" stroke="#3d7cdb" stroke-width="2"/>
+<path d="M91 50l11-19 15 15 11-27 12 27 15-15 10 19-10 13H101Z" fill="url(#gold)" stroke="#fff4b1" stroke-width="3" stroke-linejoin="round"/>
+<text x="128" y="133" text-anchor="middle" font-family="Arial,sans-serif" font-size="47" font-weight="900" fill="url(#gold)" stroke="#431b76" stroke-width="6" paint-order="stroke" filter="url(#glow)">Yalla</text>
+<path d="M65 143Q128 163 191 143l-11 17q-52 18-104 0Z" fill="url(#cyan)" stroke="#e4ffff" stroke-width="2"/>
+<text x="128" y="185" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="900" letter-spacing="3" fill="url(#cyan)" stroke="#142e67" stroke-width="2" paint-order="stroke">CITY</text>
+<path d="M43 83l4 10 11 2-8 7 2 11-9-6-9 6 2-11-8-7 11-2Z" fill="#fff29b"/>
+<path d="M211 72l3 8 9 1-7 6 2 9-7-5-8 5 2-9-7-6 9-1Z" fill="#fff29b"/>
+<path d="M47 201q81 35 162 0" fill="none" stroke="#20dfff" stroke-width="3" stroke-linecap="round" opacity=".8"/>
 </svg>
