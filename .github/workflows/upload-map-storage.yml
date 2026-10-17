@@ -1,0 +1,50 @@
+name: Upload Yalla City to WorkAdventure Map Storage
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '*.tmj'
+      - 'tilesets/**'
+      - 'src/**'
+      - 'input/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'buildmap.vite.config.ts'
+      - '.github/workflows/upload-map-storage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upload-map:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build map
+        run: npm run buildmap
+
+      - name: Upload map to WorkAdventure Map Storage
+        env:
+          MAP_STORAGE_URL: https://open-world-43356.map-storage.workadventu.re/
+          MAP_STORAGE_API_KEY: ${{ secrets.YALLACITYUPLOAD }}
+          UPLOAD_DIRECTORY: yalla-city
+        run: |
+          if [ -z "$MAP_STORAGE_API_KEY" ]; then
+            echo "::error::Missing GitHub Actions secret YALLACITYUPLOAD. Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          npm run upload-only
