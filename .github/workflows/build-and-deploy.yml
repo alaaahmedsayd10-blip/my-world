@@ -31,6 +31,9 @@ jobs:
       - name: Build project
         run: npm run buildmap
 
+      - name: Add game entry page
+        run: cp index.html dist/index.html
+
       - name: Extract UPLOAD_MODE from .env
         run: |
           UPLOAD_MODE=$(grep '^[^#]*UPLOAD_MODE' .env | cut -d '=' -f2)
@@ -83,7 +86,7 @@ jobs:
         run: npm run upload-only
 
       - name: Deploy using Github Pages
-        if: ${{ env.UPLOAD_MODE == 'GH_PAGES' }}
+        if: ${{ env.UPLOAD_MODE == 'GH_PAGES' || env.UPLOAD_MODE == 'GITHUB' }}
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -11,7 +11,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const LOGIN_URL = "https://alaaahmedsayd10-blip.github.io/my-world/login.html";
 const USER_UID_KEY = "yalla_user_uid";
-const RULES_KEY_PREFIX = "yalla_rules_accepted_";
 
 const ANIMALS = [
   { id: "cat", label: "قطة", price: 2, emoji: "🐱" },
@@ -26,7 +25,6 @@ let currentCoins = 0;
 let currentPopup: { close: () => void } | undefined;
 let goldUnsubscribe: (() => void) | undefined;
 let loginModalOpen = false;
-let rulesPopupShown = false;
 let shopPopupOpen = false;
 
 console.info("Yalla1 Firebase game script starting");
@@ -45,30 +43,6 @@ WA.onInit().then(async () => {
       allowApi: true,
       allowFullScreen: false,
     });
-  };
-
-  const showRulesIfNeeded = () => {
-    if (!currentUser || rulesPopupShown) return;
-    const key = RULES_KEY_PREFIX + currentUser.uid;
-    if (localStorage.getItem(key) === "yes") return;
-    rulesPopupShown = true;
-    currentPopup = WA.ui.openPopup("rulesPopup", "قوانين Yalla City\n\n1. احترم باقي اللاعبين.\n2. لا تشارك كلمة المرور مع أي شخص.\n3. تبدأ حسابات اللاعبين الجدد بـ 5 كوينز فقط.\n4. عمليات الشراء تخصم الكوينز من حسابك.\n5. استخدم المتجر داخل المنطقة المحددة فقط.", [
-      {
-        label: "موافق",
-        className: "success",
-        callback: (popup) => {
-          localStorage.setItem(key, "yes");
-          popup.close();
-          currentPopup = undefined;
-        },
-      },
-    ]);
-  };
-
-  const openRules = () => {
-    WA.ui.openPopup("yalla-rules-menu", "📜 قوانين Yalla City\n\n1. احترم جميع اللاعبين.\n2. ممنوع الإزعاج أو الإساءة.\n3. لا تشارك بيانات حسابك أو كلمة المرور.\n4. لا تستخدم الثغرات أو تحاول تعطيل اللعبة.\n5. تعامل باحترام مع الجميع.", [
-      { label: "إغلاق", className: "primary", callback: (popup) => popup.close() },
-    ]);
   };
 
   const openHelp = () => {
@@ -122,11 +96,6 @@ WA.onInit().then(async () => {
             ]);
           }).catch(() => WA.chat.sendChatMessage("تعذر تحميل الحيوانات من قاعدة البيانات.", { scope: "local" }));
         },
-      },
-      {
-        label: "📜 قوانين اللعبة",
-        className: "primary" as const,
-        callback: (popup: { close: () => void }) => { popup.close(); openRules(); },
       },
       {
         label: "🎮 شرح اللعبة",
@@ -183,11 +152,6 @@ WA.onInit().then(async () => {
           ]);
         }).catch(() => WA.chat.sendChatMessage("تعذر تحميل الحيوانات.", { scope: "local" }));
       },
-    });
-    WA.ui.actionBar.addButton({
-      id: "yalla-game-rules",
-      label: "📜 قوانين اللعبة",
-      callback: openRules,
     });
     WA.ui.actionBar.addButton({
       id: "yalla-game-help",
@@ -283,7 +247,6 @@ WA.onInit().then(async () => {
         if (updated.exists()) {
           updateGoldBanner(Number(updated.data().gold ?? 0));
           loginModalOpen = false;
-          showRulesIfNeeded();
         } else {
           WA.chat.sendChatMessage("جاري تجهيز ملف حسابك...", { scope: "local" });
         }
