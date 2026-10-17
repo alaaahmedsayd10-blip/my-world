@@ -15,7 +15,7 @@
     {
       "name": "mapImage",
       "type": "string",
-      "value": "conference.png"
+      "value": "public/yalla-map-icon.svg"
     },
     {
       "name": "mapName",
