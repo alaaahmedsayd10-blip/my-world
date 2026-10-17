@@ -4,13 +4,13 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Yalla City — تسجيل الدخول</title>
   <style>
-    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#101827,#202d48);color:#f8fafc;min-height:100vh;display:grid;place-items:center;padding:18px}.card{width:min(100%,430px);background:#182338;border:1px solid #3b4962;border-radius:20px;padding:26px;box-shadow:0 18px 55px #0006}h1{margin:0 0 8px;font-size:26px}p{color:#bdc8da;line-height:1.6;margin:0 0 20px}.field{display:grid;gap:7px;margin:14px 0}label{font-size:14px;color:#dbeafe}input{width:100%;padding:13px 14px;border:1px solid #475569;border-radius:10px;background:#0e1728;color:white;font:inherit;outline:none}input:focus{border-color:#a78bfa}button{width:100%;padding:13px;border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;margin-top:10px}.primary{background:#8b5cf6;color:white}.secondary{background:#29364e;color:#e5e7eb;border:1px solid #475569}.message{min-height:24px;margin-top:14px;font-size:14px;color:#fca5a5}.hint{font-size:12px;color:#94a3b8;margin-top:16px}
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#101827,#202d48);color:#f8fafc;min-height:100vh;display:grid;place-items:center;padding:18px}.card{width:min(100%,430px);background:#182338;border:1px solid #3b4962;border-radius:20px;padding:26px;box-shadow:0 18px 55px #0006}h1{margin:0 0 8px;font-size:26px}p{color:#bdc8da;line-height:1.6;margin:0 0 20px}.field{display:grid;gap:7px;margin:14px 0}label{font-size:14px;color:#dbeafe}input{width:100%;padding:13px 14px;border:1px solid #475569;border-radius:10px;background:#0e1728;color:white;font:inherit;outline:none}input:focus{border-color:#a78bfa}button{width:100%;padding:13px;border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;margin-top:10px}.primary{background:#8b5cf6;color:white}.secondary{background:#29364e;color:#e5e7eb;border:1px solid #475569}.message{min-height:24px;margin-top:14px;font-size:14px;color:#fca5a5}
   </style>
 </head>
 <body>
   <main class="card">
     <h1>🌆 أهلاً بك في Yalla City</h1>
-    <p>سجّل دخولك أو أنشئ حسابًا جديدًا. الحساب الجديد يبدأ بـ 5 جولد.</p>
+    <p>سجّل دخولك أو أنشئ حسابًا جديدًا. الحساب الجديد يبدأ بـ 5 كوينز.</p>
     <form id="auth-form">
       <div class="field"><label for="phone">رقم التليفون</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="مثال: 01012345678" required maxlength="20"></div>
       <div class="field"><label for="password">كلمة المرور</label><input id="password" name="password" type="password" autocomplete="current-password" minlength="6" placeholder="6 أحرف على الأقل" required></div>
@@ -18,7 +18,6 @@
       <button class="secondary" id="signup" type="button">إنشاء حساب جديد</button>
     </form>
     <div class="message" id="message" role="status" aria-live="polite"></div>
-    <div class="hint">كلمة المرور تُدار بأمان عبر Firebase Authentication ولا يتم تخزينها كنص أو كهاش في مستند المستخدم.</div>
   </main>
   <script src="https://play.workadventu.re/iframe_api.js"></script>
   <script src="./firebase-config.js"></script>
@@ -46,6 +45,13 @@
       const digits = normalizePhone(phone);
       if (!/^\d{8,15}$/.test(digits)) throw new Error('اكتب رقم تليفون صحيحًا بالأرقام فقط، من 8 إلى 15 رقمًا.');
       return `${digits}@phone.yalla-city.app`;
+    }
+    function phoneLoginCandidates(phone) {
+      const digits = normalizePhone(phone);
+      const candidates = [digits];
+      if (/^01\d{9}$/.test(digits)) candidates.push('20' + digits.slice(1));
+      if (/^201\d{9}$/.test(digits)) candidates.push('0' + digits.slice(2));
+      return [...new Set(candidates)];
     }
     function showError(error) {
       const code = error?.code || '';
@@ -85,9 +91,18 @@
           credential = await createUserWithEmailAndPassword(auth, email, password);
           await setDoc(doc(db, 'users', credential.user.uid), { phone, gold: 5, animals: [], createdAt: serverTimestamp() });
         } else {
-          credential = await signInWithEmailAndPassword(auth, email, password);
-          const profile = await getDoc(doc(db, 'users', credential.user.uid));
-          if (!profile.exists()) throw new Error('حساب المصادقة موجود لكن ملف اللاعب غير موجود. تواصل مع الإدارة.');
+          let lastError;
+          credential = null;
+          for (const candidate of phoneLoginCandidates(phone)) {
+            try {
+              credential = await signInWithEmailAndPassword(auth, phoneToEmail(candidate), password);
+              break;
+            } catch (error) {
+              lastError = error;
+              if (error?.code !== 'auth/invalid-credential' && error?.code !== 'auth/user-not-found') throw error;
+            }
+          }
+          if (!credential) throw lastError || new Error('لم يتم العثور على الحساب بهذا الرقم وكلمة المرور.');
         }
         await finishLogin(credential.user, phone);
       } catch (error) { showError(error); }
