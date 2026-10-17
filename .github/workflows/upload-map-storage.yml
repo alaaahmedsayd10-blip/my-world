@@ -40,11 +40,11 @@ jobs:
       - name: Upload map to WorkAdventure Map Storage
         env:
           MAP_STORAGE_URL: https://open-world-43356.map-storage.workadventu.re/
-          MAP_STORAGE_API_KEY: ${{ secrets.YALLACITYUPLOAD }}
+          MAP_STORAGE_API_KEY: ${{ secrets.MAP_STORAGE_API_KEY }}
           UPLOAD_DIRECTORY: yalla-city
         run: |
           if [ -z "$MAP_STORAGE_API_KEY" ]; then
-            echo "::error::Missing GitHub Actions secret YALLACITYUPLOAD. Add it under Settings > Secrets and variables > Actions."
+            echo "::error::Missing GitHub Actions secret MAP_STORAGE_API_KEY. Add it under Settings > Secrets and variables > Actions."
             exit 1
           fi
           npm run upload-only
