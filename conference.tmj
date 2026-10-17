@@ -10,7 +10,7 @@
     {
       "name": "mapDescription",
       "type": "string",
-      "value": "Yalla City virtual space"
+      "value": "Yalla City — عالم افتراضي للعب والتواصل"
     },
     {
       "name": "mapImage",
@@ -20,7 +20,7 @@
     {
       "name": "mapName",
       "type": "string",
-      "value": "Yalla City - Conference"
+      "value": "Yalla City"
     },
      {
       "name": "script",
