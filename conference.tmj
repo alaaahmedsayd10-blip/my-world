@@ -22,20 +22,10 @@
       "type": "string",
       "value": "Yalla City"
     },
-     {
+    {
       "name": "script",
       "type": "string",
       "value": "src/main.ts"
-    },
-    {
-      "name": "adminTag",
-      "type": "string",
-      "value": "no-admin"
-    },
-    {
-      "name": "moderatorTag",
-      "type": "string",
-      "value": "no-admin"
     }
   ],
   "infinite": false,
@@ -3280,13 +3270,7 @@
       "name": "configuration",
       "objects": [],
       "opacity": 1,
-      "properties": [
-        {
-          "name": "tag",
-          "type": "string",
-          "value": "editor"
-        }
-      ],
+      "properties": [],
       "type": "objectgroup",
       "visible": true,
       "x": 0,
@@ -4007,19 +3991,6 @@
       "type": "objectgroup",
       "draworder": "topdown",
       "objects": [
-        {
-          "id": 62,
-          "name": "rulesPopup",
-          "class": "area",
-          "x": 320,
-          "y": 176,
-          "width": 96,
-          "height": 64,
-          "rotation": 0,
-          "visible": false,
-          "properties": [],
-          "point": false
-        },
         {
           "id": 63,
           "name": "shop",
