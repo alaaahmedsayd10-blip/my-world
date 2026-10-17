@@ -10,12 +10,12 @@
     {
       "name": "mapDescription",
       "type": "string",
-      "value": "Yalla City — عالم افتراضي للعب والتواصل"
+      "value": "Yalla City — عالم افتراضي للعب والتواصل بهوية Yalla"
     },
     {
       "name": "mapImage",
       "type": "string",
-      "value": "public/yalla-map-icon.svg"
+      "value": "yalla-map-icon.svg"
     },
     {
       "name": "mapName",
