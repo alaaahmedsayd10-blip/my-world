@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#101326">
 <title>Yalla City</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#151b31;--text:#f8fafc;--muted:#aab4ca;--purple:#7c3aed;--cyan:#22d3ee}
+:root{color-scheme:dark;--bg:#0b1020;--text:#f8fafc;--muted:#aab4ca;--purple:#7c3aed;--cyan:#22d3ee}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text);background:radial-gradient(ellipse at 50% 0,#35205f 0,transparent 48%),var(--bg);display:flex;flex-direction:column}
 header{width:min(900px,92%);margin:auto;display:flex;align-items:center;justify-content:space-between;padding:22px 0}
@@ -19,15 +19,13 @@ h1{font-size:clamp(2.6rem,8vw,5rem);line-height:1.1;margin:18px 0;background:lin
 p{color:var(--muted);font-size:1.05rem;line-height:1.8;margin:0 0 28px}
 .enter{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 28px;border-radius:16px;background:linear-gradient(100deg,var(--purple),#5b21b6);color:white;text-decoration:none;font-weight:900;font-size:1.1rem;box-shadow:0 14px 38px #7c3aed44}
 .enter:active,.icon-button:active{transform:scale(.98)}
-.tools{display:flex;gap:12px;margin-top:30px}
-.hint{font-size:.85rem;color:#8793aa;margin-top:18px}
 footer{text-align:center;color:#8793aa;font-size:.82rem;padding:20px}
-dialog{width:min(420px,calc(100% - 32px));border:1px solid #ffffff25;border-radius:20px;background:var(--panel);color:var(--text);padding:24px;box-shadow:0 24px 80px #0009}
+dialog{width:min(420px,calc(100% - 32px));border:1px solid #ffffff25;border-radius:20px;background:#151b31;color:var(--text);padding:24px;box-shadow:0 24px 80px #0009}
 dialog::backdrop{background:#030712bb}
 dialog h2{margin-top:0}
 dialog p{margin-bottom:20px}
 .close{border:0;border-radius:12px;background:#ffffff12;color:white;padding:11px 18px;font:inherit;cursor:pointer}
-@media(max-width:500px){main{padding-top:20px}.mark{font-size:3.5rem}.tools{margin-top:24px}}
+@media(max-width:500px){main{padding-top:20px}.mark{font-size:3.5rem}}
 </style>
 </head>
 <body>
@@ -40,10 +38,6 @@ dialog p{margin-bottom:20px}
   <h1>Yalla City</h1>
   <p>عالمك الافتراضي مستنيك.</p>
   <a class="enter" href="https://play.workadventu.re/_/global/alaaahmedsayd10-blip.github.io/my-world/conference.tmj?v=5" rel="noopener">🚀 ادخل اللعبة</a>
-  <div class="tools" aria-label="اختصارات">
-    <button class="icon-button" id="rulesButton2" type="button" aria-label="قوانين اللعبة" title="قوانين اللعبة">📜</button>
-  </div>
-  <div class="hint">اضغط على زر الدخول لبدء اللعب</div>
 </main>
 <footer>Yalla City</footer>
 <dialog id="rulesDialog">
@@ -54,7 +48,6 @@ dialog p{margin-bottom:20px}
 <script>
 const rulesDialog=document.getElementById('rulesDialog');
 document.getElementById('rulesButton').addEventListener('click',()=>rulesDialog.showModal());
-document.getElementById('rulesButton2').addEventListener('click',()=>rulesDialog.showModal());
 document.getElementById('closeRules').addEventListener('click',()=>rulesDialog.close());
 </script>
 </body>
