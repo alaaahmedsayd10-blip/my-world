@@ -1,0 +1,22 @@
+{
+  "version": "2.1.0",
+  "mapUrl": "https://alaaahmedsayd10-blip.github.io/my-world/office.tmj",
+  "entities": {},
+  "areas": [],
+  "entityCollections": [
+    {
+      "url": "https://play.workadventu.re/collections/FurnitureCollection.json",
+      "type": "file"
+    },
+    {
+      "url": "https://play.workadventu.re/collections/OfficeCollection.json",
+      "type": "file"
+    }
+  ],
+  "metadata": {
+    "name": "Yalla City Office",
+    "description": "Yalla City office map with Firebase animal shop account integration.",
+    "thumbnail": "https://alaaahmedsayd10-blip.github.io/my-world/office.png",
+    "copyright": "Credits: WorkAdventure (https://WorkAdventu.re); License: CC-BY-SA 3.0"
+  }
+}
